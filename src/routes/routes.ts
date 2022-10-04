@@ -19,7 +19,7 @@ export const routes: Route[] = [
     to: "/lazy1",
     path: "lazy1",
     Component: Lazy1,
-    name: "Lazyl-1",
+    name: "Shopping Page",
   },
 
   {
