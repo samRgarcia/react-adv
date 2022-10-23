@@ -1,47 +1,57 @@
+import { useState } from "react";
 import {
   ProductButtons,
   ProductCard,
   ProductImg,
   ProductTitle,
 } from "../../02-component-patterns/component/index";
+import { productCard } from "../../02-component-patterns/data/products";
+import { useShoppingCart } from "../../02-component-patterns/hooks/useShoppingCart";
+import { Product } from "../../02-component-patterns/interfaces/interfaces";
 import { ShoppingPage } from "../../02-component-patterns/pages/ShoppingPage";
 import "../../02-component-patterns/styles/custom-styles.css";
-const productCard = {
-  id: 1,
-  title: "Product Card 1",
-  img: "./coffee-mug.png",
-};
+
 export const Lazyload1 = () => {
+  const { shoppingCart, onProductCountChange } = useShoppingCart();
+
   return (
     <div>
       <ShoppingPage />
       <div style={{ display: "flex" }}>
-        <ProductCard product={productCard} className={"bg-dark"}>
-          <ProductCard.Img className="custom-image" />
-          <ProductCard.Title title="" className="text-primary" />
-          <ProductCard.Buttons className="custom-buttons" />
-        </ProductCard>
-
-        <ProductCard product={productCard} className={"bg-dark"}>
-          <ProductImg
-            className="custom-image"
-            style={{ boxShadow: "10px 10px 10px rgba(0,0,0,0.2)" }}
-          />
-          <ProductTitle title="" className="text-primary" />
-          <ProductButtons className="custom-buttons" />
-        </ProductCard>
-
-        <ProductCard product={productCard} style={{ background: "red" }}>
-          <ProductImg />
-          <ProductTitle title="" style={{ fontWeight: "bold" }} />
-          <ProductButtons
-            style={{
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          />
-        </ProductCard>
+        {productCard.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            className={"bg-dark"}
+            onChange={(event) => onProductCountChange(event)}
+            value={
+              product.id in shoppingCart ? shoppingCart[product.id].count : 0
+            }
+          >
+            <ProductCard.Img className="custom-image" />
+            <ProductCard.Title title="" className="text-primary" />
+            <ProductCard.Buttons className="custom-buttons" />
+          </ProductCard>
+        ))}
       </div>
+
+      <div className="shopping-cart">
+        {Object.values(shoppingCart).map((product) => (
+          <ProductCard
+            product={product}
+            value={product.count}
+            className={"bg-dark"}
+            style={{ width: "100px" }}
+            onChange={(event) => onProductCountChange(event)}
+          >
+            <ProductCard.Img className="custom-image" />
+            <ProductCard.Buttons className="custom-buttons" />
+          </ProductCard>
+        ))}
+      </div>
+      <code>
+        <pre>{JSON.stringify(shoppingCart, null, 5)}</pre>
+      </code>
     </div>
   );
 };
